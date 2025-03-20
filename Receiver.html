@@ -1,0 +1,53 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
+import { Play, Pause } from "lucide-react";
+
+const songs = [
+  { title: "Song 1", src: "/songs/song1.mp3" },
+  { title: "Song 2", src: "/songs/song2.mp3" },
+  { title: "Song 3", src: "/songs/song3.mp3" },
+];
+
+export default function ChatReceiver({ messages }) {
+  const [playingSong, setPlayingSong] = useState(null);
+  const audioRef = useState(new Audio())[0];
+
+  const togglePlay = (song) => {
+    if (playingSong === song) {
+      audioRef.pause();
+      setPlayingSong(null);
+    } else {
+      audioRef.src = song.src;
+      audioRef.play();
+      setPlayingSong(song);
+    }
+  };
+
+  return (
+    <div className="p-4 max-w-md mx-auto">
+      <div className="space-y-4">
+        {messages.map((msg, index) => (
+          <motion.div
+            key={index}
+            className="p-2 bg-gray-200 rounded-md text-xl italic text-white glow"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {msg.text}
+            {msg.song && (
+              <Button
+                className="ml-2 bg-blue-500 text-white"
+                onClick={() => togglePlay(msg.song)}
+              >
+                {playingSong === msg.song ? <Pause /> : <Play />} {msg.song.title}
+              </Button>
+            )}
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
