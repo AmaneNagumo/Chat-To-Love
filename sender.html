@@ -1,0 +1,63 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
+
+const songs = [
+  { name: "Binibini - Zack Tabudlo", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/Zack%20Tabudlo%20-%20Binibini%20(Lyrics).mp3" },
+  { name: "Earned It - The Weeknd", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/The%20Weeknd%20-%20Earned%20It%20(Fifty%20Shades%20Of%20Grey).mp3" },
+  { name: "Sweater Weather - The Neighbourhood", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/The%20Neighbourhood%20-%20Sweater%20Weather%20(Official%20Video).mp3" },
+  { name: "Beautiful Girls - Sean Kingston", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/Sean%20Kingston%20-%20Beautiful%20Girls%20(Lyrics).mp3" },
+  { name: "Make You Mine - PUBLIC", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/PUBLIC%20-%20Make%20You%20Mine%20(Put%20Your%20Hand%20in%20Mine)%20%5BOfficial%20Video%5D.mp3" },
+  { name: "Rude - MAGIC!", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/MAGIC!%20-%20Rude%20(Lyrics).mp3" },
+  { name: "Just the Way You Are - Bruno Mars", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/Just%20the%20Way%20You%20Are.mp3" },
+  { name: "All of Me - John Legend", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/John%20Legend%20-%20All%20of%20Me%20(Lyrics).mp3" },
+  { name: "When I Was Your Man - Bruno Mars", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/Bruno%20Mars%20-%20When%20I%20Was%20Your%20Man.mp3" },
+  { name: "Marry You - Bruno Mars", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/Bruno%20Mars%20-%20Marry%20You%20(Official%20Lyric%20Video).mp3" },
+  { name: "Just The Way You Are - Bruno Mars", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/Bruno%20Mars%20-%20Just%20The%20Way%20You%20Are%20(Official%20Music%20Video).mp3" },
+];
+
+export default function Sender() {
+  const [message, setMessage] = useState("");
+  const [selectedSong, setSelectedSong] = useState(null);
+  const [isSongListVisible, setIsSongListVisible] = useState(false);
+
+  const sendMessage = () => {
+    console.log("Sent message:", message);
+    setMessage("");
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-pink-300 to-purple-400 p-6">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-lg p-6 bg-transparent">
+        <Input
+          placeholder="Type a heartfelt message..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="mb-4 p-3 border rounded-2xl w-full shadow-sm bg-white"
+        />
+        <Button onClick={sendMessage} className="w-full bg-red-500 hover:bg-red-600 text-white text-lg py-3 rounded-xl">
+          ❤️ Send Message ❤️
+        </Button>
+        <div className="mt-4">
+          <Button onClick={() => setIsSongListVisible(!isSongListVisible)} className="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-lg shadow-md">
+            {isSongListVisible ? "🔽 Hide Song List" : "🔼 Show Song List"}
+          </Button>
+          {isSongListVisible && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3 overflow-y-auto max-h-40 w-full border border-gray-300 rounded-lg p-2">
+              {songs.map((song, index) => (
+                <Button
+                  key={index}
+                  onClick={() => setSelectedSong(song)}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg shadow-md my-1"
+                >
+                  {song.name}
+                </Button>
+              ))}
+            </motion.div>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
