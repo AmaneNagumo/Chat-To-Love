@@ -1,0 +1,72 @@
+import { useState, useRef } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { Play, Pause } from "lucide-react";
+
+export default function Receiver() {
+  const [messages, setMessages] = useState([]);
+  const [currentSong, setCurrentSong] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const receiveMessage = (newMessage) => {
+    setMessages([...messages, newMessage]);
+  };
+
+  const togglePlayPause = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-pink-400 to-purple-600 p-6">
+      {messages.length === 0 ? (
+        <motion.p 
+          className="text-white text-3xl italic animate-pulse" 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          transition={{ duration: 1 }}
+        >
+          Waiting for a message...
+        </motion.p>
+      ) : (
+        <Card className="w-full max-w-lg p-6 bg-white rounded-3xl shadow-2xl transform hover:scale-105 transition-all duration-300">
+          <CardContent>
+            <div className="space-y-4">
+              {messages.map((msg, index) => (
+                <motion.p
+                  key={index}
+                  className="text-2xl text-pink-600 font-semibold text-center drop-shadow-lg"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {msg}
+                </motion.p>
+              ))}
+            </div>
+            {currentSong && (
+              <div className="mt-6 flex flex-col items-center">
+                <audio ref={audioRef} src={currentSong} />
+                <Button 
+                  onClick={togglePlayPause} 
+                  className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition"
+                >
+                  {isPlaying ? <Pause size={20} /> : <Play size={20} />} 
+                  {isPlaying ? "Pause" : "Play"} Song
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
