@@ -2,6 +2,21 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set } from "firebase/database";
+
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "your-app.firebaseapp.com",
+    databaseURL: "https://your-app-default-rtdb.firebaseio.com",
+    projectId: "your-app",
+    storageBucket: "your-app.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
 const songs = [
   { name: "Binibini - Zack Tabudlo", url: "https://github.com/AmaneNagumo/Chat-To-Love/raw/refs/heads/main/Zack%20Tabudlo%20-%20Binibini%20(Lyrics).mp3" },
@@ -23,6 +38,13 @@ export default function Sender() {
   const [isSongListVisible, setIsSongListVisible] = useState(false);
 
   const sendMessage = () => {
+    if (message.trim() === "") return;
+    
+    set(ref(db, "messages/" + Date.now()), {
+      text: message,
+      timestamp: Date.now(),
+    });
+    
     console.log("Sent message:", message);
     setMessage("");
   };
@@ -44,12 +66,12 @@ export default function Sender() {
             {isSongListVisible ? "🔽 Hide Song List" : "🔼 Show Song List"}
           </Button>
           {isSongListVisible && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3 overflow-y-auto max-h-40 w-full border border-gray-300 rounded-lg p-2">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3 max-h-40 overflow-y-auto space-y-2">
               {songs.map((song, index) => (
                 <Button
                   key={index}
                   onClick={() => setSelectedSong(song)}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg shadow-md my-1"
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg shadow-md"
                 >
                   {song.name}
                 </Button>
